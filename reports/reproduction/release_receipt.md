@@ -25,7 +25,7 @@ The live verdict dataset still points to judged revision
 - Published HF revision:
   `18b2059a2546a32121b4ca5475b47ad1251ccae0`
 - Winning experiment branch:
-  `orx/evaluator-visible-cumulative-release-candidate`
+  `release/evaluator-candidate`
 - Frozen scientific/release-candidate Git SHA:
   `195c2dbb517e9bc1ddbc7dbc6032de5bd077e679`
 
