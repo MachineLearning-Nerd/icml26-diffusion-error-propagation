@@ -1,71 +1,128 @@
-# Quantifying Error Propagation and Model Collapse — claim-level reproduction
+# Quantifying Error Propagation and Model Collapse in Diffusion Models
 
-[![Open in molab](https://marimo.io/molab-shield.svg)](https://molab.marimo.io/github/MachineLearning-Nerd/icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models/blob/main/notebooks/reproduction.py)
+[![Open in Molab](https://marimo.io/molab-shield.svg)](https://molab.marimo.io/github/MachineLearning-Nerd/icml26-diffusion-error-propagation/blob/main/notebooks/reproduction.py)
 
-This repository reproduces six judge-anchored claims from
-[arXiv 2602.16601](https://arxiv.org/abs/2602.16601). The previous Space revision
-earned 5/12 because C1–C5 used a 1D Gaussian mean-shift toy and C6 was skipped.
-The new evidence yields **C1–C4 VERIFIED, C5 FALSIFIED as written, and C6 BLOCKED**.
-The live judge has not evaluated it: **8–10/12 is a conservative forecast and
-10/12 the best-supported possibility, not an earned score**.
+This repository is an independent, claim-by-claim reproduction audit of
+[arXiv:2602.16601](https://arxiv.org/abs/2602.16601), accepted at ICML 2026. It
+studies how score-estimation error propagates through score-based diffusion
+models when each retraining generation mixes fresh target samples with synthetic
+samples, and how the fresh-data fraction affects long-run distributional drift.
 
-The paper's C1 number is the exact coefficient `1/2`; the checker reconstructs it
-and rejects `0.49`. For C2–C3, the paper requires eta in `[0,1]`; the calibration
-now spans zero to one and gives `chi²/(eta eps²)=1.00005–1.01725` at positive eta.
-C4's exact limsup floors are reconstructed. C5's claimed multiplicative constant
-must grow from 26.84 at N=10 to `1.43e15` at N=160, contradicting a fixed constant.
-C6's paper-scale population-GMM route observes generation-20 moment drift of
-`+108.38%`, `+24.72%`, and `+13.77%` for alpha 0.1, 0.5, and 0.9.
+## Current verdict
 
-The C6 GMM solver uses an exact population-KDE endpoint instead of the paper's
-unpublished acceleration for a literal 100,000-center KDE plus 500 Euler steps.
-Fashion-MNIST and CIFAR-10 remain untrained because their protocols omit material
-settings; a measured optimistic Fashion CPU lower bound is 6.59 hours. These
-substitutions are why C6 is BLOCKED rather than passed.
+The formal campaign produces **C1–C4 VERIFIED, C5 FALSIFIED as written, and C6
+BLOCKED**. These are reproduction-audit verdicts, not a new paper score. The
+previous live judged Space revision scored 5/12; the current candidate remains
+**AWAITING LIVE JUDGE**. Its conservative score forecast is 8–10/12, with 10/12
+the best-supported possibility.
 
-- [Illustrated technical report](reports/reproduction/report.md)
-- [Reproducibility command ledger](reports/reproduction/command_ledger.md)
-- [Tutorial-style marimo notebook](notebooks/reproduction.py)
-- [Current evaluator-visible Space candidate](space_candidate/pages/index.md)
+| Claim | Paper statement | Audit verdict | How the verdict is produced |
+| --- | --- | --- | --- |
+| C1 — Proposition 3.1 | Endpoint KL is bounded by the learned-path KL with exact coefficient `1/2`. | **VERIFIED** | Exact Girsanov/data-processing certificate, 10D calibration, and controls that reject `0.49` and a false `0.1×` budget. |
+| C2 — Proposition 3.3 | Under the source assumptions, observable score error gives the stated chi-squared lower bound. | **VERIFIED** | Exact arbitrary-`eta` certificate, Gaussian and non-Gaussian calibrations, and coefficient/lower-bound mutation controls. |
+| C3 — Theorem 3.4 | The lower and upper bounds give two-sided scaling when the positive-`eta` qualifier holds. | **VERIFIED** | The same certificate checks both coefficients, the `eta` floor, and a false upper-bound control. |
+| C4 — Proposition 4.1 | Persistent score-error energy forces accumulated divergence; its pointwise floor needs a stronger assumption. | **VERIFIED** | Separate quantifier certificate, exact limsup floor, and the `eps_i²=1/(i+1)` divergent-series control. |
+| C5 — Theorem 4.2 | A fixed positive bias is multiplicatively asymptotic to the discounted error energy under summable errors. | **FALSIFIED as written** | The source’s fixed-constant `asymp` definition conflicts with a positive left-side bias and a right side tending to zero. The appendix’s additive bounds are not challenged. |
+| C6 — empirical alpha tradeoff | Low fresh-data fractions cause more drift in the GMM and image experiments. | **BLOCKED** | A paper-scale population-GMM route aligns, but the finite-KDE acceleration, complete image protocols, checkpoints, and raw metrics are unavailable. |
 
-## Experiment log
+The strongest C6 route observes generation-20 total-second-moment drift of
+`+108.38%`, `+24.72%`, and `+13.77%` for alpha `0.1`, `0.5`, and `0.9`. It uses an
+exact population-KDE endpoint in place of the paper’s unpublished acceleration
+for a literal 100,000-center KDE and 500 Euler steps, so it is recorded as aligned
+partial evidence rather than verification.
 
-The command below is copied verbatim from `orx exp status` and is identical on every
-experiment node.
+## Paper
 
-| Branch / experiment | Purpose or change | Exact run command | Assessment / outcome | Compute |
-| --- | --- | --- | --- | --- |
-| `main` | Publication surface | Not run as an experiment (publication surface) | README, report, notebook, and published text mirror | none |
-| [judged toy baseline](https://github.com/MachineLearning-Nerd/icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models/tree/orx/judged-toy-baseline-and-frozen-environment) | Freeze judged proxy and uv environment | `uv run --frozen python -m repro_campaign.run` | C1–C5 TOY; C6 BLOCKED | HF `cpu-upgrade`, 26 s |
-| [C1 corrected calibration](https://github.com/MachineLearning-Nerd/icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models/tree/orx/c1-calibrated-violation-test-and-false-bound-con) | Exact Girsanov certificate, fresh seeds, false-bound control | `uv run --frozen python -m repro_campaign.run` | C1 VERIFIED | HF `cpu-upgrade`, 53 s |
-| [C2–C3 observability](https://github.com/MachineLearning-Nerd/icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models/tree/orx/c2-c3-exact-observability-certificates-and-non-g) | Arbitrary eta and non-Gaussian endpoint | `uv run --frozen python -m repro_campaign.run` | C2/C3 VERIFIED | HF `cpu-upgrade`, 59 s |
-| [C4–C5 global claims](https://github.com/MachineLearning-Nerd/icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models/tree/orx/c4-exact-persistence-proof-and-c5-bias-contradic) | Separate C4 quantifiers; test C5's positive bias | `uv run --frozen python -m repro_campaign.run` | C4 VERIFIED; C5 FALSIFIED | HF `cpu-upgrade`, 58 s |
-| [C6 GMM route](https://github.com/MachineLearning-Nerd/icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models/tree/orx/c6-route-1-full-scale-gmm-population-kde-closure) | Paper-scale population-KDE closure, ten seeds | `uv run --frozen python -m repro_campaign.run` | aligned partial evidence | HF `cpu-upgrade`, 58 s |
-| [C6 Fashion audit](https://github.com/MachineLearning-Nerd/icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models/tree/orx/c6-route-2-fashion-mnist-protocol-and-cpu-lower) | Protocol identifiability and CPU lower bound | `uv run --frozen python -m repro_campaign.run` | BLOCKED | HF `cpu-upgrade`, 69 s |
-| [C6 CIFAR audit](https://github.com/MachineLearning-Nerd/icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models/tree/orx/c6-route-3-cifar-10-source-contract-audit) | CIFAR source contract and evidence coverage | `uv run --frozen python -m repro_campaign.run` | BLOCKED | HF `cpu-upgrade`, 69 s |
-| [C6 falsification search](https://github.com/MachineLearning-Nerd/icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models/tree/orx/c6-route-4-assumption-satisfying-falsification-s) | Mandatory fourth route after LOW confidence | `uv run --frozen python -m repro_campaign.run` | no valid counterexample; BLOCKED | HF `cpu-upgrade`, 69 s |
+Khelifa, Nail B., Richard E. Turner, and Ramji Venkataramanan. “Quantifying Error
+Propagation and Model Collapse in Diffusion Models.” arXiv:2602.16601v2, 2026.
+[Paper and abstract](https://arxiv.org/abs/2602.16601).
 
-## Reproduce
+The paper derives upper and lower bounds on accumulated divergence between the
+generated and target distributions, characterizes regimes governed by score error
+and fresh-data proportion, and reports synthetic-data and image experiments.
+
+## How to reproduce the claims
+
+The campaign has one fixed entrypoint:
 
 ```bash
 uv sync --frozen
 uv run --frozen python -m repro_campaign.run
 ```
 
-The formal campaign used Python 3.12 and the committed `uv.lock`. Multicore work ran
-only on Hugging Face `cpu-upgrade`, with active CPU work bounded to eight workers;
-no GPU was used.
+The committed Python 3.12 environment is in `pyproject.toml` and `uv.lock`. The
+claim modules and their independent checkers are:
 
-Open the tutorial locally with:
+| Claim | Production path |
+| --- | --- |
+| C1 | `repro_campaign/claim1_girsanov.py` → `repro_campaign/check_claim1.py`; reads the source contract, checks the exact `1/2` certificate, runs the 10D calibration, and executes coefficient/budget negative controls. |
+| C2–C3 | `repro_campaign/claim23_observability.py` → `repro_campaign/check_claim23.py`; constructs endpoint-visible and time-orthogonal drift components, sweeps `eta`, checks A1–A4, and validates both bounds. |
+| C4–C5 | `repro_campaign/claim45_global.py` → `repro_campaign/check_claim45.py`; separates the two C4 quantifiers, reconstructs the floor, and tests the C5 bias contradiction plus mutations that remove or relocate the bias. |
+| C6 | `repro_campaign/claim6_gmm_population.py`, `claim6_fashion_feasibility.py`, `claim6_cifar_audit.py`, and `claim6_falsification.py` → `check_claim6_falsification.py`; records aligned GMM evidence, protocol gaps, feasibility, and a mandatory assumption-satisfying falsification search. |
 
-```bash
-uv run marimo edit notebooks/reproduction.py
-uv run marimo run notebooks/reproduction.py
+The fixed command is used on every experiment branch. The [technical
+report](reports/reproduction/report.md), [claim pages](space_candidate/pages/index.md),
+[command ledger](reports/reproduction/command_ledger.md), and
+[release receipt](reports/reproduction/release_receipt.md) provide the raw paths,
+assumption audits, run identifiers, controls, compute limits, and known
+substitutions. The [marimo notebook](notebooks/reproduction.py) is a tutorial
+view of the same evidence.
+
+## Branch map
+
+Branch names describe purpose rather than the automation tool that created them.
+The [branch audit](branch-audit.md) records the legacy-to-clean mapping, source
+tips, and the final verification checklist.
+
+| Branch | Purpose | Result |
+| --- | --- | --- |
+| [`main`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/main) | Documentation and publication surface | C1–C4 VERIFIED; C5 FALSIFIED; C6 BLOCKED |
+| [`historical/judged-baseline`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/historical/judged-baseline) | Frozen judged proxy and environment | C1–C5 toy checks; C6 BLOCKED |
+| [`audit/c1-girsanov-certificate`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/audit/c1-girsanov-certificate) | Exact C1 certificate and 10D calibration | C1 VERIFIED |
+| [`audit/c1-corrected-calibration`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/audit/c1-corrected-calibration) | Fresh-seed C1 calibration and false-bound controls | C1 VERIFIED |
+| [`audit/c2-c3-observability`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/audit/c2-c3-observability) | Arbitrary-`eta` and non-Gaussian observability | C2/C3 VERIFIED |
+| [`audit/c4-c5-global-claims`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/audit/c4-c5-global-claims) | Persistence quantifiers and bias theorem audit | C4 VERIFIED; C5 FALSIFIED |
+| [`audit/c6-gmm-population`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/audit/c6-gmm-population) | Paper-scale population-GMM route | Aligned partial evidence |
+| [`audit/c6-fashion-protocol`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/audit/c6-fashion-protocol) | Fashion-MNIST protocol and CPU feasibility audit | BLOCKED |
+| [`audit/c6-cifar-contract`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/audit/c6-cifar-contract) | CIFAR-10 source-contract audit | BLOCKED |
+| [`audit/c6-falsification-search`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/audit/c6-falsification-search) | Assumption-satisfying C6 counterexample search | No valid counterexample; BLOCKED |
+| [`release/evaluator-candidate`](https://github.com/MachineLearning-Nerd/icml26-diffusion-error-propagation/tree/release/evaluator-candidate) | Cumulative evaluator-visible release candidate | Publication gates PASS; awaiting judge |
+
+## Published artifact and limitations
+
+The existing Space was updated in place; no second Space was created:
+[DineshAI/QYA0Q28ssf, published revision
+`18b2059a2546a32121b4ca5475b47ad1251ccae0`](https://huggingface.co/spaces/DineshAI/QYA0Q28ssf/tree/18b2059a2546a32121b4ca5475b47ad1251ccae0).
+The earlier judged revision is retained under
+`space_candidate/historical/` and protected by a SHA-256 manifest.
+
+The principal limits are deliberate: finite calibrations do not prove universal
+theorems; the C6 population-GMM solver is a material substitution; and the image
+protocols cannot be uniquely reconstructed from the paper. No C6 points are
+forecast.
+
+## Citation
+
+```bibtex
+@article{khelifa2026quantifying,
+  title   = {Quantifying Error Propagation and Model Collapse in Diffusion Models},
+  author  = {Khelifa, Nail B. and Turner, Richard E. and Venkataramanan, Ramji},
+  journal = {arXiv preprint arXiv:2602.16601},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2602.16601}
+}
 ```
 
-## Historical safety
+## Thank you
 
-The exact judged Hugging Face revision
-`49401cddb554d5c3f7ae98d400567b8d6f10c028` is protected by a SHA-256 manifest.
-Its old pages remain reachable and are labeled **Historical rejected baseline**.
-They are not the current verifier.
+Thank you to Nail B. Khelifa, Richard E. Turner, and Ramji Venkataramanan for
+making the paper and its theoretical and empirical claims available for careful
+independent reproduction. This audit is intended as a transparent companion to
+the work: it documents what was reproduced, what was falsified as written, and
+what remains blocked by missing protocol or compute details.
+
+## Attribution
+
+Documentation and approved repository-history normalization for this collection
+are published under the `MachineLearning-Nerd` GitHub identity. Paper claims and
+paper authorship remain attributed to the authors cited above.
