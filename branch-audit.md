@@ -27,6 +27,8 @@ After normalization, the public repository must satisfy all of the following:
 
 - only the 11 final branches in the table are present;
 - `main` is the default branch;
+- every commit author and committer is
+  MachineLearning-Nerd <MachineLearning-Nerd@users.noreply.github.com>;
 - every branch contains the current README and this audit record;
 - all commit authors and committers resolve to `MachineLearning-Nerd`’s verified
   no-reply identity;

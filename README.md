@@ -8,6 +8,14 @@ studies how score-estimation error propagates through score-based diffusion
 models when each retraining generation mixes fresh target samples with synthetic
 samples, and how the fresh-data fraction affects long-run distributional drift.
 
+The standardized dossier is available in
+[STATUS.md](STATUS.md), [CLAIM_EVIDENCE.md](CLAIM_EVIDENCE.md),
+[SOURCE_AUDIT.md](SOURCE_AUDIT.md), [ENVIRONMENT.md](ENVIRONMENT.md),
+[REPORT.md](REPORT.md), [CITATION.cff](CITATION.cff),
+[AUTHOR_THANK_YOU.md](AUTHOR_THANK_YOU.md), [claims.json](claims.json),
+[reproduction_verdicts.json](reproduction_verdicts.json), and
+[verify_final.py](verify_final.py).
+
 ## Current verdict
 
 The formal campaign produces **C1–C4 VERIFIED, C5 FALSIFIED as written, and C6

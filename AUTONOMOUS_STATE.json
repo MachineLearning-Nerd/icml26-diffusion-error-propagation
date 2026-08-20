@@ -1,0 +1,30 @@
+{
+  "paper": "2602.16601v2",
+  "title": "Quantifying Error Propagation and Model Collapse in Diffusion Models",
+  "repository": "MachineLearning-Nerd/icml26-diffusion-error-propagation",
+  "old_repository_slug": "icml26-repro-QYA0Q28ssf-quantifying-error-propagation-and-model-collapse-in-diffusion-models",
+  "overall_status": "PARTIAL_C1_C2_C3_C4_VERIFIED_C5_FALSIFIED_C6_BLOCKED_HISTORICAL_SCORE_5_OF_12_NO_CURRENT_SCORE",
+  "current_score_claim": false,
+  "publication_allowed": false,
+  "author_endorsement_claimed": false,
+  "canonical_identity": {
+    "name": "MachineLearning-Nerd",
+    "email": "MachineLearning-Nerd@users.noreply.github.com"
+  },
+  "normalization": {
+    "pre_normalization_main": "76e274248d481ce9ee5fbdb86e4e933dc4deb80a",
+    "recovery_bundle_sha256": "6ac6e828fbd8152eaab706d81afe1a4be3eeffe6adef8920328ec6f29d92b784",
+    "published_branch_count": 11,
+    "expected_reachable_commit_count_after_dossier": 27
+  },
+  "historical_evaluation": {
+    "space": "DineshAI/QYA0Q28ssf",
+    "score": "5/12",
+    "is_current": false
+  },
+  "evidence_forecast": {
+    "range": "8-10/12",
+    "best_supported_points": 10,
+    "is_live_judge_result": false
+  }
+}

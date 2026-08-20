@@ -1,0 +1,51 @@
+{
+  "paper": "2602.16601v2",
+  "repository": "MachineLearning-Nerd/icml26-diffusion-error-propagation",
+  "overall_status": "PARTIAL_C1_C2_C3_C4_VERIFIED_C5_FALSIFIED_C6_BLOCKED_HISTORICAL_SCORE_5_OF_12_NO_CURRENT_SCORE",
+  "claims": {
+    "C1": {
+      "status": "VERIFIED_SCOPED",
+      "raw_status": "VERIFIED",
+      "evidence": "space_candidate/evidence/artifacts/C1/raw_formal.json"
+    },
+    "C2": {
+      "status": "VERIFIED_SCOPED",
+      "raw_status": "VERIFIED",
+      "evidence": "space_candidate/evidence/artifacts/C2-C3/raw_formal_summary.json"
+    },
+    "C3": {
+      "status": "VERIFIED_SCOPED",
+      "raw_status": "VERIFIED",
+      "evidence": "space_candidate/evidence/artifacts/C2-C3/raw_formal_summary.json"
+    },
+    "C4": {
+      "status": "VERIFIED_SCOPED",
+      "raw_status": "VERIFIED",
+      "evidence": "space_candidate/evidence/artifacts/C4-C5/raw_formal_summary.json"
+    },
+    "C5": {
+      "status": "FALSIFIED_SCOPED",
+      "raw_status": "FALSIFIED",
+      "evidence": "space_candidate/evidence/artifacts/C4-C5/raw_formal_summary.json"
+    },
+    "C6": {
+      "status": "BLOCKED",
+      "raw_status": "BLOCKED",
+      "evidence": "space_candidate/evidence/artifacts/C6"
+    }
+  },
+  "historical_evaluation": {
+    "space": "DineshAI/QYA0Q28ssf",
+    "score": "5/12",
+    "current_score_claim": false
+  },
+  "publication": {
+    "tests_passed": true,
+    "publication_gate_passed": true,
+    "publication_allowed": false,
+    "author_endorsement_claimed": false,
+    "forecast_range": "8-10/12",
+    "best_supported_points": 10,
+    "reason": "This is a claim-level evidence package, not a new live judge submission or author-endorsed implementation."
+  }
+}

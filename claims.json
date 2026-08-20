@@ -1,0 +1,134 @@
+{
+  "paper": {
+    "title": "Quantifying Error Propagation and Model Collapse in Diffusion Models",
+    "arxiv": "2602.16601v2",
+    "authors": [
+      "Nail B. Khelifa",
+      "Richard E. Turner",
+      "Ramji Venkataramanan"
+    ]
+  },
+  "overall_status": "PARTIAL_C1_C2_C3_C4_VERIFIED_C5_FALSIFIED_C6_BLOCKED_HISTORICAL_SCORE_5_OF_12_NO_CURRENT_SCORE",
+  "current_score_claim": false,
+  "author_endorsement_claimed": false,
+  "historical_evaluation": {
+    "space": "DineshAI/QYA0Q28ssf",
+    "score": "5/12",
+    "is_current": false
+  },
+  "evidence_forecast": {
+    "range": "8-10/12",
+    "best_supported_points": 10,
+    "is_live_judge_result": false
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "paper_claim": "Endpoint KL is bounded by learned-path KL with exact coefficient 1/2.",
+      "status": "VERIFIED_SCOPED",
+      "possible_points": 2,
+      "source_anchor": "Proposition 3.1",
+      "production_path": [
+        "repro_campaign/claim1_girsanov.py constructs the certificate and calibration",
+        "repro_campaign/check_claim1.py runs coefficient and budget controls",
+        "space_candidate/evidence/artifacts/C1/raw_formal.json records five seeds and accepted certificate"
+      ],
+      "evidence": [
+        "space_candidate/evidence/artifacts/C1/proof_certificate.json",
+        "space_candidate/evidence/artifacts/C1/raw_formal.json",
+        "repro_campaign/check_claim1.py"
+      ],
+      "boundary": "Registered score-error path and finite ten-dimensional calibration."
+    },
+    {
+      "id": "C2",
+      "paper_claim": "Observable score error gives the stated chi-squared lower bound.",
+      "status": "VERIFIED_SCOPED",
+      "possible_points": 2,
+      "source_anchor": "Proposition 3.3",
+      "production_path": [
+        "repro_campaign/claim23_observability.py constructs arbitrary-eta observability routes",
+        "repro_campaign/check_claim23.py checks both coefficients and mutation controls",
+        "space_candidate/evidence/artifacts/C2-C3/raw_formal_summary.json records Gaussian and non-Gaussian calibration"
+      ],
+      "evidence": [
+        "space_candidate/evidence/artifacts/C2-C3/proof_certificate.json",
+        "space_candidate/evidence/artifacts/C2-C3/raw_formal_summary.json",
+        "repro_campaign/check_claim23.py"
+      ],
+      "boundary": "Explicit observable-error assumptions and finite calibrations."
+    },
+    {
+      "id": "C3",
+      "paper_claim": "The lower and upper bounds give two-sided scaling under the positive-eta qualifier.",
+      "status": "VERIFIED_SCOPED",
+      "possible_points": 2,
+      "source_anchor": "Theorem 3.4",
+      "production_path": [
+        "The C2-C3 certificate checks lower and upper coefficients together",
+        "The eta floor and false-bound mutations are independently tested",
+        "space_candidate/evidence/artifacts/C2-C3/raw_formal_summary.json records both mutation rejections"
+      ],
+      "evidence": [
+        "space_candidate/evidence/artifacts/C2-C3/raw_formal_summary.json",
+        "repro_campaign/check_claim23.py"
+      ],
+      "boundary": "Registered positive-eta qualifier and source assumptions."
+    },
+    {
+      "id": "C4",
+      "paper_claim": "Persistent score-error energy forces accumulated divergence.",
+      "status": "VERIFIED_SCOPED",
+      "possible_points": 2,
+      "source_anchor": "Proposition 4.1",
+      "production_path": [
+        "repro_campaign/claim45_global.py separates persistence quantifiers",
+        "repro_campaign/check_claim45.py checks the exact limsup floor",
+        "The divergent-series epsilon_i squared equal to 1/(i+1) control is recorded"
+      ],
+      "evidence": [
+        "space_candidate/evidence/artifacts/C4-C5/raw_formal_summary.json",
+        "repro_campaign/check_claim45.py"
+      ],
+      "boundary": "Pointwise floor assumptions are kept separate from accumulated-energy quantifiers."
+    },
+    {
+      "id": "C5",
+      "paper_claim": "A fixed positive bias is multiplicatively asymptotic to discounted error energy under summable errors.",
+      "status": "FALSIFIED_SCOPED",
+      "possible_points": 2,
+      "source_anchor": "Theorem 4.2",
+      "production_path": [
+        "repro_campaign/claim45_global.py encodes the source's fixed-constant asymp definition",
+        "repro_campaign/check_claim45.py tests the positive-bias contradiction",
+        "Bias-zero and bias-on-right-hand-side mutations are rejected",
+        "space_candidate/evidence/artifacts/C4-C5/raw_formal_summary.json records the scope"
+      ],
+      "evidence": [
+        "space_candidate/evidence/artifacts/C4-C5/raw_formal_summary.json",
+        "repro_campaign/check_claim45.py"
+      ],
+      "boundary": "Literal Theorem 4.2 wording only; appendix additive inequalities are not challenged."
+    },
+    {
+      "id": "C6",
+      "paper_claim": "Lower fresh-data fractions cause more long-run drift in GMM and image experiments.",
+      "status": "BLOCKED",
+      "possible_points": 0,
+      "source_anchor": "Empirical alpha tradeoff",
+      "production_path": [
+        "claim6_gmm_population.py aligns the population-KDE GMM mechanism",
+        "claim6_fashion_feasibility.py and claim6_cifar_audit.py audit missing protocols and CPU feasibility",
+        "claim6_falsification.py performs an assumption-satisfying counterexample search",
+        "space_candidate/evidence/artifacts/C6/route1 through route4 record all boundaries"
+      ],
+      "evidence": [
+        "space_candidate/evidence/artifacts/C6/route1/raw_formal_summary.json",
+        "space_candidate/evidence/artifacts/C6/route2/raw_formal_summary.json",
+        "space_candidate/evidence/artifacts/C6/route3/raw_formal_summary.json",
+        "space_candidate/evidence/artifacts/C6/route4/raw_formal_summary.json"
+      ],
+      "boundary": "Missing exact KDE acceleration, image protocols, checkpoints, and raw metrics prevent a paper-scale rerun."
+    }
+  ]
+}
